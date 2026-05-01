@@ -12,7 +12,6 @@
         
         section { width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; position: relative; padding: 40px 20px; }
 
-        /* --- ANIMATIONS --- */
         .reveal { opacity: 0; transition: all 1.5s ease-out; }
         .fade-in.active { opacity: 1; }
         .slide-up { transform: translateY(40px); }
@@ -20,18 +19,15 @@
         .zoom-in { transform: scale(0.9); }
         .zoom-in.active { opacity: 1; transform: scale(1); }
 
-        /* --- MUSIC --- */
         #musicControl { position: fixed; top: 20px; right: 20px; z-index: 1000; width: 45px; height: 45px; background: rgba(255,255,255,0.9); border: 1px solid var(--accent-gold); border-radius: 50%; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--accent-gold); }
         .music-playing { animation: rotate 4s linear infinite; }
         @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
 
-        /* --- PHOTO SECTIONS --- */
         .photo-section { justify-content: flex-end; padding-bottom: 15vh; background: #000; }
         .bg-img { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-size: cover; background-position: center; z-index: 1; }
         .bg-img::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(transparent 30%, rgba(0,0,0,0.8)); }
         .photo-content { position: relative; z-index: 10; color: white; width: 100%; padding: 0 10px; }
         
-        /* FIXED FOR SINGLE LINE ON MOBILE */
         .main-names { 
             font-family: 'Cormorant Garamond', serif; 
             font-weight: 300; 
@@ -46,21 +42,20 @@
         .std-title { font-family: 'Playfair Display', serif; font-size: 3rem; text-transform: uppercase; letter-spacing: 8px; line-height: 1.2; }
         .std-script { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--accent-gold); }
 
-        /* --- INFO ELEMENTS --- */
-        .countdown { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
-        .time-block { display: flex; flex-direction: column; width: 60px; }
-        .number { font-size: 2.2rem; font-family: sans-serif; font-weight: 200; }
-        .label { font-size: 0.7rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; }
+        /* --- COUNTDOWN WITH COLONS --- */
+        .countdown { display: flex; justify-content: center; align-items: center; gap: 5px; margin: 30px 0; }
+        .time-block { display: flex; flex-direction: column; width: 55px; }
+        .number { font-size: 1.8rem; font-family: sans-serif; font-weight: 200; }
+        .colon { font-size: 1.5rem; padding-bottom: 15px; color: var(--accent-gold); font-weight: 300; }
+        .label { font-size: 0.65rem; color: var(--accent-gold); text-transform: uppercase; letter-spacing: 1px; }
 
         .location-card { width: 100%; max-width: 340px; margin-bottom: 60px; }
         .venue-img { width: 100%; aspect-ratio: 1/1; border-radius: 20px; object-fit: cover; margin-bottom: 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); }
         .maps-btn { display: inline-block; padding: 12px 35px; border: 1px solid var(--accent-gold); color: var(--accent-gold); text-decoration: none; font-size: 0.8rem; border-radius: 30px; }
 
-        /* --- RSVP FORM --- */
         .rsvp-container { background: white; padding: 35px 25px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: left; }
         .input-style { width: 100%; padding: 14px; border: 1px solid #f0f0f0; border-radius: 30px; background: #fbfbfb; margin-bottom: 12px; outline: none; font-family: inherit; font-size: 1rem; }
         .submit-btn { width: 100%; padding: 18px; background: #1a1a1a; color: #fff; border: none; border-radius: 40px; font-size: 1.1rem; cursor: pointer; margin-top: 15px; letter-spacing: 1px; }
-        .submit-btn:disabled { background: #999; }
 
         .scroll-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: white; font-size: 0.7rem; letter-spacing: 5px; animation: bounce 2s infinite; opacity: 0.5; z-index: 10; }
         @keyframes bounce { 0%, 100% {transform: translate(-50%, 0);} 50% {transform: translate(-50%, -10px);} }
@@ -80,17 +75,23 @@
         <div class="scroll-hint">SCROLL</div>
     </section>
 
-    <!-- PAGE 2: COUNTDOWN -->
+    <!-- PAGE 2: COUNTDOWN & NEW TEXT -->
     <section>
         <div class="reveal slide-up">
-            <div style="font-size: 1.5rem; font-style: italic; margin-bottom: 15px;">Մինչև հանդիպում մնացել է</div>
+            <div style="font-size: 1.4rem; font-style: italic; margin-bottom: 5px;">Մինչև հանդիպում մնացել է</div>
             <div class="countdown">
                 <div class="time-block"><span class="number" id="days">00</span><span class="label">Օր</span></div>
+                <div class="colon">:</div>
                 <div class="time-block"><span class="number" id="hours">00</span><span class="label">Ժամ</span></div>
+                <div class="colon">:</div>
                 <div class="time-block"><span class="number" id="minutes">00</span><span class="label">Րոպե</span></div>
+                <div class="colon">:</div>
                 <div class="time-block"><span class="number" id="seconds">00</span><span class="label">Վրկ</span></div>
             </div>
-            <p style="max-width: 300px; line-height: 1.8; font-size: 1.3rem; font-weight: 300;">Սիրով հրավիրում ենք Ձեզ կիսելու մեր ընտանիքի ծննդյան բերկրանքը:</p>
+            <!-- UPDATED ARMENIAN TEXT -->
+            <p style="max-width: 320px; line-height: 1.6; font-size: 1.25rem; font-weight: 300; margin: 0 auto;">
+                Սրտանց հրավիրում ենք Ձեզ մեզ հետ միասին տոնելու մեր կյանքի ամենակարևոր և գեղեցիկ օրը՝ մեր հարսանիքը։
+            </p>
         </div>
     </section>
 
@@ -116,7 +117,7 @@
         </div>
 
         <div class="location-card reveal slide-up">
-            <img src="hall1.jpg" class="venue-img">
+            <img src="hall.jpg" class="venue-img">
             <h2 style="font-size: 2rem; font-family: 'Playfair Display', serif; margin: 0;">Հանդիսություն</h2>
             <div style="color: var(--accent-gold); font-size: 1.2rem; margin: 10px 0;">Ժամը՝ 17:30</div>
             <p style="color: #777; margin-bottom: 25px;">«Արարատ Իվենթ Հոլլ»</p>
@@ -182,7 +183,6 @@
             btn.innerText = "Ուղարկվում է...";
             btn.disabled = true;
 
-            // YOUR GOOGLE SCRIPT URL
             const scriptURL = 'https://script.google.com/macros/s/AKfycbyUM5Rag34xTE0U97m0AyYRht_039zNWWF7l3XPB2W_M9JyN_d5pIFnoFD9JyVBJNyJqg/exec';
 
             try {
@@ -194,7 +194,6 @@
                     body: JSON.stringify({ name, attendance: att, side, count, message })
                 });
                 
-                // Show Success Message
                 document.getElementById('rsvp-area').innerHTML = `
                     <div style="text-align:center; padding: 40px 0;">
                         <h3 style="color: var(--accent-gold); font-family: 'Playfair Display', serif; font-size: 1.8rem;">Շնորհակալություն:</h3>
