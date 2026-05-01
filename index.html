@@ -31,16 +31,18 @@
         .bg-img::after { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(transparent 30%, rgba(0,0,0,0.8)); }
         .photo-content { position: relative; z-index: 10; color: white; width: 100%; padding: 0 10px; }
         
-        /* --- SIZE FIXED FOR SINGLE LINE --- */
+        /* FIXED FOR SINGLE LINE ON MOBILE */
         .main-names { 
             font-family: 'Cormorant Garamond', serif; 
             font-weight: 300; 
-            font-size: 2.6rem; /* Smaller size to ensure single line on mobile */
+            font-size: 2.5rem; 
             font-style: italic; 
             letter-spacing: 1px; 
             margin: 0; 
-            white-space: nowrap; /* Prevents breaking into two lines */
+            white-space: nowrap; 
         }
+        @media (max-width: 370px) { .main-names { font-size: 2.1rem; } }
+
         .std-title { font-family: 'Playfair Display', serif; font-size: 3rem; text-transform: uppercase; letter-spacing: 8px; line-height: 1.2; }
         .std-script { font-family: 'Dancing Script', cursive; font-size: 2.2rem; color: var(--accent-gold); }
 
@@ -58,6 +60,7 @@
         .rsvp-container { background: white; padding: 35px 25px; border-radius: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.05); width: 100%; max-width: 380px; text-align: left; }
         .input-style { width: 100%; padding: 14px; border: 1px solid #f0f0f0; border-radius: 30px; background: #fbfbfb; margin-bottom: 12px; outline: none; font-family: inherit; font-size: 1rem; }
         .submit-btn { width: 100%; padding: 18px; background: #1a1a1a; color: #fff; border: none; border-radius: 40px; font-size: 1.1rem; cursor: pointer; margin-top: 15px; letter-spacing: 1px; }
+        .submit-btn:disabled { background: #999; }
 
         .scroll-hint { position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%); color: white; font-size: 0.7rem; letter-spacing: 5px; animation: bounce 2s infinite; opacity: 0.5; z-index: 10; }
         @keyframes bounce { 0%, 100% {transform: translate(-50%, 0);} 50% {transform: translate(-50%, -10px);} }
@@ -130,27 +133,28 @@
     </section>
 
     <!-- PAGE 6: RSVP -->
-    <section style="background-color: #f8f6f2;">
-        <div class="rsvp-container">
+    <section style="background-color: #f8f6f2;" id="rsvp-section">
+        <div class="rsvp-container" id="rsvp-area">
             <h2 style="font-family: 'Playfair Display', serif; font-size: 1.6rem; text-align: center; margin-bottom: 30px;">Հաստատեք Ձեր ներկայությունը</h2>
             
+            <input type="text" id="name" class="input-style" placeholder="Անուն Ազգանուն">
+
             <p style="font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">Կմասնակցե՞ք միջոցառմանը</p>
-            <label style="display: block; margin-bottom: 8px;"><input type="radio" name="att" value="Այո"> Այո, սիրով</label>
-            <label style="display: block; margin-bottom: 20px;"><input type="radio" name="att" value="Ոչ"> Ցավոք, չեմ կարող</label>
+            <div style="margin-bottom: 20px;">
+                <label style="margin-right: 20px;"><input type="radio" name="att" value="Այո"> Այո, սիրով</label>
+                <label><input type="radio" name="att" value="Ոչ"> Ցավոք, չեմ կարող</label>
+            </div>
 
             <p style="font-size: 0.95rem; margin-bottom: 10px; font-weight: 500;">Ու՞մ կողմից եք հրավիրված</p>
-            <div style="display: flex; gap: 20px; margin-bottom: 25px;">
-                <label><input type="radio" name="side" value="Փեսայի"> Փեսայի</label>
+            <div style="margin-bottom: 20px;">
+                <label style="margin-right: 20px;"><input type="radio" name="side" value="Փեսայի"> Փեսայի</label>
                 <label><input type="radio" name="side" value="Հարսի"> Հարսի</label>
             </div>
 
-            <div style="display: flex; gap: 10px;">
-                <input type="text" id="name" class="input-style" placeholder="Անուն Ազգանուն" style="flex: 2;">
-                <input type="number" id="count" class="input-style" placeholder="Քանակ" style="flex: 1;">
-            </div>
+            <input type="number" id="count" class="input-style" placeholder="Հյուրերի քանակ">
             <textarea id="msg" class="input-style" style="height: 90px; border-radius: 20px; resize: none; padding-top: 15px;" placeholder="Լրացուցիչ նշումներ"></textarea>
 
-            <button onclick="sendRSVP()" class="submit-btn">Ուղարկել Պատասխանը</button>
+            <button onclick="sendRSVP()" id="submit-btn" class="submit-btn">Ուղարկել Պատասխանը</button>
         </div>
     </section>
 
@@ -162,31 +166,45 @@
         }
         document.addEventListener('click', () => { if(music.paused) toggleMusic(); }, {once: true});
 
-        function sendRSVP() {
+        async function sendRSVP() {
+            const btn = document.getElementById('submit-btn');
             const name = document.getElementById('name').value;
-            const sideEl = document.querySelector('input[name="side"]:checked');
-            const attEl = document.querySelector('input[name="att"]:checked');
+            const att = document.querySelector('input[name="att"]:checked')?.value;
+            const side = document.querySelector('input[name="side"]:checked')?.value;
+            const count = document.getElementById('count').value || "1";
+            const message = document.getElementById('msg').value;
 
-            if(!name || !sideEl || !attEl) { 
-                alert("Խնդրում ենք լրացնել բոլոր դաշտերը:"); 
-                return; 
+            if(!name || !att || !side) {
+                alert("Խնդրում ենք լրացնել բոլոր անհրաժեշտ դաշտերը:");
+                return;
             }
 
-            const side = sideEl.value;
-            const att = attEl.value;
-            const count = document.getElementById('count').value || "1";
-            const msg = document.getElementById('msg').value;
-            
-            // EMAIL ROUTING
-            let targetEmail = (side === "Փեսայի") ? "sil2ohanyan2@gmail.com" : "silohanyan663@gmail.com";
+            btn.innerText = "Ուղարկվում է...";
+            btn.disabled = true;
 
-            const subject = "RSVP - " + name;
-            const body = `Մասնակցություն: ${att}\nՀրավիրող կողմ: ${side}\nԱնուն: ${name}\nՀյուրերի քանակ: ${count}\nՆամակ: ${msg}`;
-            
-            // Encoded URL to ensure it works on all mobile devices
-            const mailtoUrl = "mailto:" + targetEmail + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-            
-            window.location.href = mailtoUrl;
+            // YOUR GOOGLE SCRIPT URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyUM5Rag34xTE0U97m0AyYRht_039zNWWF7l3XPB2W_M9JyN_d5pIFnoFD9JyVBJNyJqg/exec';
+
+            try {
+                await fetch(scriptURL, {
+                    method: 'POST',
+                    mode: 'no-cors', 
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, attendance: att, side, count, message })
+                });
+                
+                // Show Success Message
+                document.getElementById('rsvp-area').innerHTML = `
+                    <div style="text-align:center; padding: 40px 0;">
+                        <h3 style="color: var(--accent-gold); font-family: 'Playfair Display', serif; font-size: 1.8rem;">Շնորհակալություն:</h3>
+                        <p style="font-size: 1.1rem;">Ձեր պատասխանը հաջողությամբ գրանցվեց:</p>
+                    </div>`;
+            } catch (error) {
+                alert("Տեղի է ունեցել սխալ: Խնդրում ենք փորձել կրկին:");
+                btn.innerText = "Ուղարկել Պատասխանը";
+                btn.disabled = false;
+            }
         }
 
         const target = new Date(2026, 7, 9, 14, 0, 0).getTime();
